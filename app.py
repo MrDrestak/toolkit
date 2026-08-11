@@ -163,7 +163,7 @@ if "pais" in st.session_state:
                 
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
-        
+                    
         # Muestra resultados si ya fue procesado
         if st.session_state.procesado and "csv_content" in st.session_state:
             st.markdown("---")
@@ -186,11 +186,20 @@ if "pais" in st.session_state:
                 use_container_width=True
             )
             
+            st.markdown("---")
             # Botón para procesar otro archivo
-            if st.button("🔄 Procesar otro archivo", use_container_width=True):
-                st.session_state.procesado = False
-                st.session_state.clear()
-                st.rerun()
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔄 Procesar otro archivo", use_container_width=True, key="reset_btn"):
+                    # Limpia completamente la sesión
+                    for key in list(st.session_state.keys()):
+                        del st.session_state[key]
+                    st.rerun()
+            with col2:
+                if st.button("🏠 Volver al inicio", use_container_width=True, key="home_btn"):
+                    for key in list(st.session_state.keys()):
+                        del st.session_state[key]
+                    st.rerun()
 
 # Footer
 st.markdown("---")
