@@ -62,7 +62,7 @@ if "pais" in st.session_state:
         st.success(f"✓ Filtro: {filtro_texto}")
         
         # Paso 3: Cargar ZIP
-        st.subheader("Paso 3: Carga el archivo ZIP")
+        st.subheader("Paso 3: Carga el archivo ZIP (descargao desde SFSF)")
         uploaded_file = st.file_uploader("Selecciona el ZIP", type=["zip"])
         
         if uploaded_file is not None and not st.session_state.procesado:
