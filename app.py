@@ -105,19 +105,36 @@ if st.session_state.pais:
                                 for row in reader:
                                     contador += 1
                                     
-                                    # Obtiene Estado
+                                    # ===== FILTRO 1: Estado (A/I) =====
                                     estado = None
                                     for key in reader.fieldnames:
                                         if key.startswith("Estado"):
                                             estado = row.get(key, "").strip().strip('"').strip()
                                             break
                                     
-                                    # Filtra por estado
-                                    if st.session_state.estado == "activos" and estado != "A":
-                                        descartadas += 1
-                                        continue
+                                    # Si es "activos", solo incluir Estado = "A"
+                                    # Si es "todas", incluir TODO (sin filtrar por estado)
+                                    if st.session_state.estado == "activos":
+                                        if estado != "A":
+                                            descartadas += 1
+                                            continue
+                                    # Si es "todas", no filtra por estado, continúa
                                     
-                                    # Obtiene ID de posición y fecha
+                                    # ===== FILTRO 2: País/Empresa =====
+                                    empresa_id = row.get("Razón social.ID de razón social", "").strip().strip('"').strip()
+                                    
+                                    if st.session_state.pais == "Peru":
+                                        # PERÚ: mantener SOLO 2301 y 2101
+                                        if empresa_id not in ["2301", "2101"]:
+                                            descartadas += 1
+                                            continue
+                                    else:  # Chile
+                                        # CHILE: excluir 2301 y 2101
+                                        if empresa_id in ["2301", "2101"]:
+                                            descartadas += 1
+                                            continue
+                                    
+                                    # ===== AGRUPACIÓN: Obtiene ID de posición y fecha =====
                                     id_posicion = row.get("ID de posición", "").strip()
                                     fecha_str = row.get("Efectivo a partir del", "").strip()
                                     
