@@ -12,19 +12,19 @@ st.set_page_config(page_title="Procesador de Posiciones", layout="centered")
 col1, col2 = st.columns([0.95, 0.05])
 with col1:
     st.title("🗂️ Procesador de CSV - Posiciones")
-#with col2:
-#    if st.button("ℹ️", key="info_btn", help="Información del creador"):
-#        st.session_state.show_info = True
+with col2:
+    if st.button("ℹ️", key="info_btn", help="Información del creador"):
+        st.session_state.show_info = True
 
 # Mostrar recuadro de información si se presionó el botón
-#if st.session_state.get("show_info", False):
-#    st.info("**Elaborado por:** Walter Pacora Rodriguez (108763)")
-#    if st.button("Cerrar", key="close_info"):
-#        st.session_state.show_info = False
+if st.session_state.get("show_info", False):
+    st.info("**Elaborado por:** Walter Pacora Rodriguez (108763)")
+    if st.button("Cerrar", key="close_info"):
+        st.session_state.show_info = False
 
-#st.markdown("---")
-#st.markdown("*Elaborado por Walter Pacora Rodriguez (108763)*")
-#st.markdown("---")
+st.markdown("---")
+st.markdown("*Elaborado por Walter Pacora Rodriguez (108763)*")
+st.markdown("---")
 
 # Inicializa estado
 if "procesado" not in st.session_state:
@@ -91,26 +91,21 @@ if st.session_state.pais:
                         if not csv_file:
                             st.error("❌ No se encontró Posición.csv en el ZIP")
                         else:
+                            # Lee el archivo para obtener las dos líneas de encabezado
+                            with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
+                                primera_linea_raw = next(f_in).strip()
+                                segunda_linea_raw = next(f_in).strip()
+                            
                             # Procesa el CSV
                             posiciones = {}
                             contador = 0
                             descartadas = 0
                             fieldnames = None
-                            encabezados_tecnicos = None
-                            encabezados_español = None
                             
                             with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
-                                # Lee la primera línea (encabezados técnicos en inglés)
-                                primera_linea = next(f_in).strip()
-                                encabezados_tecnicos = [col.strip('"') for col in primera_linea.split(',')]
-                                
-                                # Lee la segunda línea (encabezados en español)
-                                segunda_linea = next(f_in).strip()
-                                encabezados_español = [col.strip('"') for col in segunda_linea.split(',')]
-                                
-                                # Crea DictReader con encabezados en español
-                                reader = csv.DictReader(f_in, fieldnames=encabezados_español)
-                                fieldnames = encabezados_español
+                                next(f_in)
+                                reader = csv.DictReader(f_in)
+                                fieldnames = reader.fieldnames
                                 
                                 for row in reader:
                                     contador += 1
@@ -163,16 +158,14 @@ if st.session_state.pais:
                                         if fecha > fecha_existente:
                                             posiciones[id_posicion] = (fecha, row)
                             
-                            # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
+                            # Genera CSV de salida CON DOS LÍNEAS DE ENCABEZADO
                             output = io.StringIO()
                             
-                            # Primera fila: encabezados técnicos originales (en inglés)
-                            primera_fila = ",".join([f'"{field}"' if "," in field else field for field in encabezados_tecnicos])
-                            output.write(primera_fila + "\n")
+                            # Escribir primera línea de encabezado (original)
+                            output.write(primera_linea_raw + "\n")
                             
-                            # Segunda fila: encabezados en español originales
-                            segunda_fila = ",".join([f'"{field}"' if "," in field else field for field in encabezados_español])
-                            output.write(segunda_fila + "\n")
+                            # Escribir segunda línea de encabezado (original)
+                            output.write(segunda_linea_raw + "\n")
                             
                             # Escribir datos
                             writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -237,4 +230,4 @@ if st.session_state.pais:
 
 # Footer
 st.markdown("---")
-st.caption("Procesador de Posiciones - Ripley | Elaborado por ID:108763")
+st.caption("Procesador de Posiciones - Ripley | Elaborado por Walter Pacora Rodriguez (108763)")
