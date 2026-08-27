@@ -96,8 +96,10 @@ if st.session_state.pais:
                             contador = 0
                             descartadas = 0
                             fieldnames = None
+                            encabezados_tecnicos = None
+                            encabezados_español = None
                             
-                        with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
+                            with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
                                 # Lee la primera línea (encabezados técnicos en inglés)
                                 primera_linea = next(f_in).strip()
                                 encabezados_tecnicos = [col.strip('"') for col in primera_linea.split(',')]
@@ -121,12 +123,10 @@ if st.session_state.pais:
                                             break
                                     
                                     # Si es "activos", solo incluir Estado = "A"
-                                    # Si es "todas", incluir TODO (sin filtrar por estado)
                                     if st.session_state.estado == "activos":
                                         if estado != "A":
                                             descartadas += 1
                                             continue
-                                    # Si es "todas", no filtra por estado, continúa
                                     
                                     # ===== FILTRO 2: País/Empresa =====
                                     empresa_id = row.get("Razón social.ID de razón social", "").strip().strip('"').strip()
@@ -237,4 +237,4 @@ if st.session_state.pais:
 
 # Footer
 st.markdown("---")
-st.caption("Procesador de Posiciones - Ripley | ID: 108763")
+st.caption("Procesador de Posiciones - Ripley | Elaborado por ID:108763")
