@@ -11,20 +11,20 @@ st.set_page_config(page_title="Procesador de Posiciones", layout="centered")
 # Crédito en la parte superior con botón (i)
 col1, col2 = st.columns([0.95, 0.05])
 with col1:
-    st.title("🗂️ Procesador de CSV - Posiciones")
-with col2:
-    if st.button("ℹ️", key="info_btn", help="Información del creador"):
-        st.session_state.show_info = True
+    st.title("🗂️ Filtrado de Posiciones")
+#with col2:
+#    if st.button("ℹ️", key="info_btn", help="Información del creador"):
+#        st.session_state.show_info = True
 
 # Mostrar recuadro de información si se presionó el botón
-if st.session_state.get("show_info", False):
-    st.info("**Elaborado por:** Walter Pacora Rodriguez (108763)")
-    if st.button("Cerrar", key="close_info"):
-        st.session_state.show_info = False
+#if st.session_state.get("show_info", False):
+#    st.info("**Elaborado por:** Walter Pacora Rodriguez (108763)")
+#    if st.button("Cerrar", key="close_info"):
+#        st.session_state.show_info = False
 
-st.markdown("---")
-st.markdown("*Elaborado por Walter Pacora Rodriguez (108763)*")
-st.markdown("---")
+#st.markdown("---")
+#st.markdown("*Elaborado por Walter Pacora Rodriguez (108763)*")
+#st.markdown("---")
 
 # Inicializa estado
 if "procesado" not in st.session_state:
@@ -230,4 +230,4 @@ if st.session_state.pais:
 
 # Footer
 st.markdown("---")
-st.caption("Procesador de Posiciones - Ripley | Elaborado por Walter Pacora Rodriguez (108763)")
+st.caption("Procesador de Posiciones - Ripley | Elaborado ID:108763")
