@@ -97,8 +97,16 @@ if st.session_state.pais:
                             descartadas = 0
                             fieldnames = None
                             
-                            with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
-                                next(f_in)
+                        with open(csv_file, 'r', encoding='utf-8-sig') as f_in:
+                                # Lee la primera línea (encabezados técnicos en inglés)
+                                primera_linea = next(f_in).strip()
+                                encabezados_tecnicos = [col.strip('"') for col in primera_linea.split(',')]
+                                
+                                # Lee la segunda línea (encabezados en español)
+                                segunda_linea = next(f_in).strip()
+                                encabezados_español = [col.strip('"') for col in segunda_linea.split(',')]
+                                
+                                # Crea DictReader con encabezados en español
                                 reader = csv.DictReader(f_in)
                                 fieldnames = reader.fieldnames
                                 
@@ -155,15 +163,15 @@ if st.session_state.pais:
                                         if fecha > fecha_existente:
                                             posiciones[id_posicion] = (fecha, row)
                             
-                                                        # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
+                            # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
                             output = io.StringIO()
                             
-                            # Primera fila: encabezados técnicos originales
-                            primera_fila = ",".join([f'"{field}"' if "," in field else field for field in fieldnames])
+                            # Primera fila: encabezados técnicos originales (en inglés)
+                            primera_fila = ",".join([f'"{field}"' if "," in field else field for field in encabezados_tecnicos])
                             output.write(primera_fila + "\n")
                             
                             # Segunda fila: encabezados en español originales
-                            segunda_fila = ",".join([f'"{field}"' if "," in field else field for field in fieldnames])
+                            segunda_fila = ",".join([f'"{field}"' if "," in field else field for field in encabezados_español])
                             output.write(segunda_fila + "\n")
                             
                             # Escribir datos
