@@ -155,56 +155,23 @@ if st.session_state.pais:
                                         if fecha > fecha_existente:
                                             posiciones[id_posicion] = (fecha, row)
                             
-                            # ===== MAPEO DIRECTO DE ENCABEZADOS =====
-                            mapeo_encabezados = {
-                                "Operadores admitidos: Delimit, Clear y Delete": "GrupoCodigo.[OPERATOR]",
-                                "ID de posición": "code",
-                                "Inglés norteamericano": "GrupoCodigo.externalName.en_US",
-                                "Valor predeterminado": "GrupoCodigo.externalName.defaultValue",
-                                "Inglés (DEPURAR)": "GrupoCodigo.externalName.en_DEBUG",
-                                "Español (España)": "GrupoCodigo.externalName.es_ES",
-                                "Estado(Valid Values : A/I   A for Activo  I for Inactivo  )": "GrupoCodigo.effectiveStatus",
-                                "Efectivo a partir del": "GrupoCodigo.effectiveStartDate",
-                                "Criticidad": "GrupoCodigo.criticality",
-                                "Titular de la posición": "GrupoCodigo.incumbent",
-                                "Valor de lista desplegable.Código externo": "GrupoCodigo.changeReason.externalCode",
-                                "Nombre de función del cargo": "GrupoCodigo.jobTitle",
-                                "Función del cargo.Código de función del cargo": "GrupoCodigo.jobCode.externalCode",
-                                "payGrade.externalCode": "GrupoCodigo.payGrade.externalCode",
-                                "Cobertura del puesto": "GrupoCodigo.targetFTE",
-                                "Vacante(Valid Values : TRUE/FALSE)": "GrupoCodigo.vacant",
-                                "Razón social.ID de razón social": "GrupoCodigo.company.externalCode",
-                                "Unidad de negocio.Código de unidad de negocio": "GrupoCodigo.businessUnit.externalCode",
-                                "División.Código de división": "GrupoCodigo.division.externalCode",
-                                "Departamento.Código de departamento": "GrupoCodigo.department.externalCode",
-                                "location.externalCode": "GrupoCodigo.location.externalCode",
-                                "Centro de costo.Código de centro de costo": "GrupoCodigo.costCenter.externalCode",
-                                "Múltiples ocupantes(Valid Values : TRUE/FALSE)": "GrupoCodigo.multipleIncumbentsAllowed",
-                                "Horas semanales contractuales": "GrupoCodigo.standardHours",
-                                "payRange.externalCode": "GrupoCodigo.payRange.externalCode",
-                                "Punto mínimo": "GrupoCodigo.cust_min",
-                                "Punto medio": "GrupoCodigo.cust_mid",
-                                "Punto máximo": "GrupoCodigo.cust_max",
-                                "Texto breve de posición": "GrupoCodigo.cust_short",
-                                "Sujeto a marcación(Valid Values : TRUE/FALSE)": "GrupoCodigo.cust_isShiftEmployee",
-                                "Días laborables por semana": "GrupoCodigo.cust_workingDaysPerWeek",
-                                "Observaciones": "GrupoCodigo.cust_observaciones",
-                                "Posición.Posición de nivel superior": "GrupoCodigo.parentPosition.code"
-                            }
-                            
-                            # Crea lista de nuevos nombres en el mismo orden que fieldnames
-                            nuevos_fieldnames = [mapeo_encabezados.get(field, f"GrupoCodigo.{field}") for field in fieldnames]
-                            
-                            # Genera CSV de salida con encabezados renombrados
+                                                        # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
                             output = io.StringIO()
-                            writer = csv.DictWriter(output, fieldnames=nuevos_fieldnames)
-                            writer.writeheader()
+                            
+                            # Primera fila: encabezados técnicos originales
+                            primera_fila = ",".join([f'"{field}"' if "," in field else field for field in fieldnames])
+                            output.write(primera_fila + "\n")
+                            
+                            # Segunda fila: encabezados en español originales
+                            segunda_fila = ",".join([f'"{field}"' if "," in field else field for field in fieldnames])
+                            output.write(segunda_fila + "\n")
+                            
+                            # Escribir datos
+                            writer = csv.DictWriter(output, fieldnames=fieldnames)
                             
                             for id_pos in sorted(posiciones.keys()):
                                 fecha, row = posiciones[id_pos]
-                                # Reordena los valores según los nuevos nombres
-                                nueva_fila = {nuevos_fieldnames[i]: row[fieldnames[i]] for i in range(len(fieldnames))}
-                                writer.writerow(nueva_fila)
+                                writer.writerow(row)
                             
                             csv_content = output.getvalue()
                             
