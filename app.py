@@ -109,8 +109,8 @@ if st.session_state.pais:
                                 encabezados_español = [col.strip('"') for col in segunda_linea.split(',')]
                                 
                                 # Crea DictReader con encabezados en español
-                                reader = csv.DictReader(f_in)
-                                fieldnames = reader.fieldnames
+                                reader = csv.DictReader(f_in, fieldnames=encabezados_español)
+                                fieldnames = encabezados_español
                                 
                                 for row in reader:
                                     contador += 1
