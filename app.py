@@ -163,7 +163,7 @@ if st.session_state.pais:
                                         if fecha > fecha_existente:
                                             posiciones[id_posicion] = (fecha, row)
                             
-                                                        # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
+                            # Genera CSV de salida con DOS FILAS DE ENCABEZADO (originales)
                             output = io.StringIO()
                             
                             # Primera fila: encabezados técnicos originales (en inglés)
