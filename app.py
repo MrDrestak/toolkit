@@ -12,9 +12,9 @@ st.set_page_config(page_title="Procesador de Posiciones", layout="centered")
 col1, col2 = st.columns([0.95, 0.05])
 with col1:
     st.title("🗂️ Procesador de CSV - Posiciones")
-#with col2:
-#    if st.button("ℹ️", key="info_btn", help="Información del creador"):
-#        st.session_state.show_info = True
+with col2:
+    if st.button("ℹ️", key="info_btn", help="Información del creador"):
+        st.session_state.show_info = True
 
 # Mostrar recuadro de información si se presionó el botón
 #if st.session_state.get("show_info", False):
@@ -155,7 +155,6 @@ if st.session_state.pais:
                                         if fecha > fecha_existente:
                                             posiciones[id_posicion] = (fecha, row)
                             
-
                             # ===== MAPEO DIRECTO DE ENCABEZADOS =====
                             mapeo_encabezados = {
                                 "Operadores admitidos: Delimit, Clear y Delete": "GrupoCodigo.[OPERATOR]",
@@ -203,18 +202,24 @@ if st.session_state.pais:
                             
                             for id_pos in sorted(posiciones.keys()):
                                 fecha, row = posiciones[id_pos]
-                            
-                            # Reordena los valores según los nuevos nombres
+                                # Reordena los valores según los nuevos nombres
                                 nueva_fila = {nuevos_fieldnames[i]: row[fieldnames[i]] for i in range(len(fieldnames))}
                                 writer.writerow(nueva_fila)
                             
-                            # Guarda en sesión
-                            st.session_state.csv_content = csv_content
-                            st.session_state.contador = contador
-                            st.session_state.posiciones_count = len(posiciones)
-                            st.session_state.descartadas = descartadas
-                            st.session_state.filename = f"UBIC_FILTRADO_{st.session_state.pais.upper()}_{st.session_state.estado.upper()}.csv"
-                            st.session_state.procesado = True
+                            csv_content = output.getvalue()
+                            
+                            # Validación: asegura que hay contenido
+                            if not csv_content or len(csv_content.strip()) == 0:
+                                st.error("❌ Error: El archivo procesado está vacío")
+                                st.session_state.procesado = False
+                            else:
+                                # Guarda en sesión
+                                st.session_state.csv_content = csv_content
+                                st.session_state.contador = contador
+                                st.session_state.posiciones_count = len(posiciones)
+                                st.session_state.descartadas = descartadas
+                                st.session_state.filename = f"UBIC_FILTRADO_{st.session_state.pais.upper()}_{st.session_state.estado.upper()}.csv"
+                                st.session_state.procesado = True
                             
                             # Limpia temporal
                             shutil.rmtree(temp_dir)
@@ -225,7 +230,7 @@ if st.session_state.pais:
                         st.error(f"❌ Error: {str(e)}")
             
             # Muestra resultados si fue procesado
-            if st.session_state.procesado and "csv_content" in st.session_state:
+            if st.session_state.procesado and hasattr(st.session_state, 'csv_content') and st.session_state.csv_content:
                 st.markdown("---")
                 st.subheader("✓ Procesamiento Completado")
                 
@@ -257,4 +262,4 @@ if st.session_state.pais:
 
 # Footer
 st.markdown("---")
-st.caption("Procesador de Posiciones - Ripley | Elaborado por Walter Pacora Rodriguez (108763)")
+st.caption("Procesador de Posiciones - Ripley | ID: 108763")
