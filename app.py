@@ -144,9 +144,9 @@ if st.session_state.pais:
                                     if not id_posicion:
                                         continue
                                     
-                                    # Parsea fecha
+                                    # Parsea fecha (formato SuccessFactors: MM/DD/YYYY)
                                     try:
-                                        fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+                                        fecha = datetime.strptime(fecha_str, "%m/%d/%Y")
                                     except:
                                         continue
                                     
